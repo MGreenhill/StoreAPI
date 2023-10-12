@@ -1,7 +1,5 @@
-using StoreSales.API;
 using StoreSales.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 

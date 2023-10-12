@@ -2,5 +2,6 @@
 {
     public class InventoryDto
     {
+        public int Id { get; set; }
     }
 }

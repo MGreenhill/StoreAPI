@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StoreSales.API.Entities
 {
-    public class Item
+    public class Item : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,9 +23,11 @@ namespace StoreSales.API.Entities
         [MaxLength(200)]
         public string? Description { get; set; }
 
-        public Item(string name)
+        public Item(string name, string type, decimal price)
         {
             Name = name;
+            Type = type;
+            Price = price;
         }
     }
 }
