@@ -1,5 +1,6 @@
 using StoreSales.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using StoreSales.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<StoreSalesContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
         builder.Configuration["ConnectionStrings:StoreSalesDBConnectionString"]));
+
+builder.Services.AddScoped<StoreRepositoryManager>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
