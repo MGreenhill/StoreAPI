@@ -32,26 +32,20 @@ namespace StoreSales.API.DbContexts
                     Id = 3
                 });
             modelBuilder.Entity<Item>().HasData(
-                new Item("Chips")
+                new Item("Chips","Food", 1.50M)
                 {
                     Id = 1,
-                    Type = "Food",
-                    Price = 1.50M,
                     Description = "BBQ flavored potato chips."
                 },
-                new Item("Cup")
+                new Item("Cup", "Misc", 1.00M)
                 {
                     Id = 2,
-                    Type = "Misc",
-                    Price = 1.00M,
                     Description = "Colorful cup with a mascot printed on it."
                 },
-                new Item("Gas")
-                {
-                    Id = 3,
-                    Type = "Fuel",
-                    Price = 3.25M,
-                    Description = "Unleaded Gasoline"
+                new Item("Gas", "Fuel", 3.25M) 
+                { 
+                    Id = 3, 
+                    Description = "Unleaded Gasoline" 
                 });
             modelBuilder.Entity<Inventory>().HasData(
                 new Inventory()

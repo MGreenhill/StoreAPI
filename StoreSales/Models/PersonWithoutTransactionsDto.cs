@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace StoreSales.API.Models
 {
-    public class PersonDto
+    public class PersonWithoutTransactionsDto
     {
         [JsonIgnore]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [JsonIgnore]
         public string FirstName { get; set; }
@@ -15,7 +15,5 @@ namespace StoreSales.API.Models
         public string LastName { get; set; }
 
         public string Name { get { return $"{FirstName} {LastName}"; } set { } }
-
-        public ICollection<Transaction> Purchases { get; set; }
     }
 }
