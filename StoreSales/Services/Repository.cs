@@ -37,7 +37,7 @@ namespace StoreSales.API.Services
         public async Task Update(TEntitiy entity)
         {
             TEntitiy? oldEntity = await _context.Set<TEntitiy>().FirstOrDefaultAsync(e => e.Id == entity.Id);
-            if(oldEntity != null)
+            if (oldEntity != null)
             {
                 _context.Entry(oldEntity).CurrentValues.SetValues(entity);
                 await _context.SaveChangesAsync();

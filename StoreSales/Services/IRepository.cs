@@ -1,5 +1,5 @@
-﻿using StoreSales.API.Entities;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using StoreSales.API.Entities;
 
 namespace StoreSales.API.Services
 {

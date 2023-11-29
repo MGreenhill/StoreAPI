@@ -32,7 +32,7 @@ namespace StoreSales.API.DbContexts
                     Id = 3
                 });
             modelBuilder.Entity<Item>().HasData(
-                new Item("Chips","Food", 1.50M)
+                new Item("Chips", "Food", 1.50M)
                 {
                     Id = 1,
                     Description = "BBQ flavored potato chips."
@@ -42,10 +42,10 @@ namespace StoreSales.API.DbContexts
                     Id = 2,
                     Description = "Colorful cup with a mascot printed on it."
                 },
-                new Item("Gas", "Fuel", 3.25M) 
-                { 
-                    Id = 3, 
-                    Description = "Unleaded Gasoline" 
+                new Item("Gas", "Fuel", 3.25M)
+                {
+                    Id = 3,
+                    Description = "Unleaded Gasoline"
                 });
             modelBuilder.Entity<Inventory>().HasData(
                 new Inventory()

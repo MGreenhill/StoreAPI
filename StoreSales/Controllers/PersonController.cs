@@ -24,7 +24,7 @@ namespace StoreSales.API.Controllers
         /// <summary>
         /// Returns a Person Entity using it's Id.
         /// </summary>
-        /// <param name="id">Unique database integer of person</param>
+        /// <param name="id">Database id of Person Entity</param>
         /// <param name="viewPurchases">Boolean to include person's transaction history</param>
         /// <returns>An ActionResult of PersonDto or PersonWithoutTransactionDto</returns>
         /// <response code ="200">Returns requested person entity</response>
@@ -34,11 +34,12 @@ namespace StoreSales.API.Controllers
         public async Task<ActionResult> GetPerson(int id, bool viewPurchases)
         {
             var person = await _storeRepositoryManager.personRepo.GetById(id);
-            if(person == null) {
+            if (person == null)
+            {
                 return NotFound();
             }
-            if(viewPurchases) 
-            { 
+            if (viewPurchases)
+            {
                 return Ok(_mapper.Map<PersonDto>(person));
             }
             return Ok(_mapper.Map<PersonWithoutTransactionsDto>(person));
@@ -49,6 +50,8 @@ namespace StoreSales.API.Controllers
         /// </summary>
         /// <param name="newPerson">Json of new person to add into database</param>
         /// <returns>ActionResult PersonDto of newly created person</returns>
+        /// <response code="201">Person was successfully created</response>
+        /// <response code="400">Request was invalid</response>
         [HttpPost]
         public async Task<ActionResult> CreatePerson([FromBody] PersonCreateDto newPerson)
         {
@@ -60,7 +63,7 @@ namespace StoreSales.API.Controllers
 
                 var createdPerson = _mapper.Map<PersonDto>(personEntity);
 
-                return CreatedAtRoute("GetPerson", new {id = personEntity.Id, viewPurchases = false}, createdPerson);
+                return CreatedAtRoute("GetPerson", new { id = personEntity.Id, viewPurchases = false }, createdPerson);
 
             }
             catch (Exception ex)
@@ -72,7 +75,7 @@ namespace StoreSales.API.Controllers
         /// <summary>
         /// Updates person in database with submitted Json
         /// </summary>
-        /// <param name="id">Unique database integer of person</param>
+        /// <param name="id">Database id of Person Entity</param>
         /// <param name="person">Json to replace person entity</param>
         /// <returns>ActionResult of completed task</returns>
         /// <response code="204">Person successfully updated</response>
@@ -87,7 +90,8 @@ namespace StoreSales.API.Controllers
                 return NotFound();
             }
 
-            try {
+            try
+            {
                 var updatedPerson = _mapper.Map<Person>(person);
                 await _storeRepositoryManager.personRepo.Update(updatedPerson);
                 await _storeRepositoryManager.SaveRepos();
@@ -98,28 +102,29 @@ namespace StoreSales.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         /// <summary>
         /// Partially updates a person in database using a JsonPatchDocument
         /// </summary>
-        /// <param name="id">Unique database integer of person</param>
+        /// <param name="id">Database id of Person Entity</param>
         /// <param name="patchDocument">Set of properties to update person in database</param>
         /// <returns>ActionResult of completed Task</returns>
-        /// <response Code="204">Person has been successfully partially updated</response>
-        /// <response Code="400">User request was invalid</response>
-        /// <response Code="404">Person does not exist</response>
+        /// <response code="204">Person has been successfully partially updated</response>
+        /// <response code="400">User request was invalid</response>
+        /// <response code="404">Person does not exist</response>
         [HttpPatch("{id}")]
         public async Task<ActionResult> PartialUpdatePerson(int id, [FromBody] JsonPatchDocument<PersonUpdateDto> patchDocument)
         {
             var personToUpdate = await _storeRepositoryManager.personRepo.GetById(id);
-            if (personToUpdate == null) 
+            if (personToUpdate == null)
             {
                 return NotFound();
             }
 
-            try { 
+            try
+            {
                 var entityPatch = _mapper.Map<JsonPatchDocument>(patchDocument);
                 await _storeRepositoryManager.personRepo.PartialUpdate(id, entityPatch);
 
@@ -134,7 +139,7 @@ namespace StoreSales.API.Controllers
         /// <summary>
         /// Deletes person from database
         /// </summary>
-        /// <param name="id">Unique database integer of person</param>
+        /// <param name="id">Database id of Person Entity</param>
         /// <returns>ActionResult of completed task</returns>
         /// <response code = "204">Successfully deleted Person</response>
         /// <response code = "404">Person to delete not found</response>

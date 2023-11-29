@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace StoreSales.API.Profiles
 {
-    public class PersonProfile: Profile
+    public class PersonProfile : Profile
     {
-        public PersonProfile() {
+        public PersonProfile()
+        {
             CreateMap<Entities.Person, Models.PersonDto>();
             CreateMap<Entities.Person, Models.PersonWithoutTransactionsDto>();
             CreateMap<Models.PersonCreateDto, Entities.Person>();
