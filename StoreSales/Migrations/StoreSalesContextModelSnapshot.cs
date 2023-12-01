@@ -31,6 +31,8 @@ namespace StoreSales.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ItemId");
+
                     b.ToTable("Inventory");
 
                     b.HasData(
@@ -124,6 +126,8 @@ namespace StoreSales.API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("TransactionId");
 
@@ -277,13 +281,32 @@ namespace StoreSales.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("StoreSales.API.Entities.Inventory", b =>
+                {
+                    b.HasOne("StoreSales.API.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("StoreSales.API.Entities.Order", b =>
                 {
+                    b.HasOne("StoreSales.API.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("StoreSales.API.Entities.Transaction", null)
                         .WithMany("Contents")
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("StoreSales.API.Entities.Transaction", b =>

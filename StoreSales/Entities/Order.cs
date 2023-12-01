@@ -14,6 +14,7 @@ namespace StoreSales.API.Entities
         public int TransactionId { get; set; }
 
         [ForeignKey("ItemId")]
+        public Item Item { get; set; }
         public int ItemId { get; set; }
 
         [Required]

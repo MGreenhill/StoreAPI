@@ -14,20 +14,6 @@ namespace StoreSales.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Inventory",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventory", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -55,6 +41,26 @@ namespace StoreSales.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Inventory_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,21 +98,17 @@ namespace StoreSales.API.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Orders_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Orders_Transactions_TransactionId",
                         column: x => x.TransactionId,
                         principalTable: "Transactions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Inventory",
-                columns: new[] { "Id", "ItemId", "Quantity" },
-                values: new object[,]
-                {
-                    { 1, 1, 4 },
-                    { 2, 2, 3 },
-                    { 3, 3, 50 }
                 });
 
             migrationBuilder.InsertData(
@@ -127,6 +129,16 @@ namespace StoreSales.API.Migrations
                     { 1, "Bob", "Smith" },
                     { 2, "Mary", "Doe" },
                     { 3, "Jim", "Bo" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Inventory",
+                columns: new[] { "Id", "ItemId", "Quantity" },
+                values: new object[,]
+                {
+                    { 1, 1, 4 },
+                    { 2, 2, 3 },
+                    { 3, 3, 50 }
                 });
 
             migrationBuilder.InsertData(
@@ -156,6 +168,16 @@ namespace StoreSales.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventory_ItemId",
+                table: "Inventory",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ItemId",
+                table: "Orders",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_TransactionId",
                 table: "Orders",
                 column: "TransactionId");
@@ -173,10 +195,10 @@ namespace StoreSales.API.Migrations
                 name: "Inventory");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

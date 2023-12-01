@@ -1,7 +1,14 @@
-﻿namespace StoreSales.API.Models
+﻿using Newtonsoft.Json;
+using StoreSales.API.Entities;
+
+namespace StoreSales.API.Models
 {
     public class InventoryDto
     {
-        public int Id { get; set; }
+        [JsonIgnore]
+        public int ItemId { get; set; }
+        public string ItemName { get; set; }
+        public int Quantity { get; set; }
+
     }
 }
