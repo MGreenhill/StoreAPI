@@ -10,10 +10,11 @@ namespace StoreSales.API.Entities
         public int Id { get; set; }
 
         [ForeignKey("ItemId")]
-        public Item Item { get; set; }
         public int ItemId { get; set; }
+        public Item Item { get; set; }
 
         [Required]
+        [Range(0, 99)]
         public int Quantity { get; set; }
     }
 }

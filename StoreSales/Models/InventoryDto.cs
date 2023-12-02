@@ -6,8 +6,11 @@ namespace StoreSales.API.Models
     public class InventoryDto
     {
         [JsonIgnore]
+        public int Id { get; set; }
+
+        [JsonIgnore]
         public int ItemId { get; set; }
-        public string ItemName { get; set; }
+        public ItemDto Item { get; set; }
         public int Quantity { get; set; }
 
     }
