@@ -13,7 +13,6 @@ namespace StoreSales.API.Entities
         public Person Person { get; set; }
         public int PersonId { get; set; }
 
-        [Required]
         public DateTime TimeOccurred { get; set; }
 
         public string? note { get; set; }

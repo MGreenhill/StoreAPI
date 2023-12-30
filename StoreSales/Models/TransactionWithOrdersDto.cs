@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using StoreSales.API.Entities;
 using System.ComponentModel.DataAnnotations;
-using StoreSales.API.Entities;
+using Newtonsoft.Json;
 
 namespace StoreSales.API.Models
 {
-    public class TransactionDto
+    public class TransactionWithOrdersDto
     {
         [JsonIgnore]
         public int Id { get; set; }
@@ -16,7 +16,9 @@ namespace StoreSales.API.Models
 
         public DateTime TimeOccurred { get; set; }
 
-        public string? Note { get; set; }
+        public string? note { get; set; }
+
+        public ICollection<Order> Contents { get; set; }
 
         public decimal TotalPrice { get; set; }
     }

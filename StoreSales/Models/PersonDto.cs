@@ -1,5 +1,5 @@
 ﻿using StoreSales.API.Entities;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace StoreSales.API.Models
 {

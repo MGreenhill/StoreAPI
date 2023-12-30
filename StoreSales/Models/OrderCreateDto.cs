@@ -1,20 +1,17 @@
 ﻿using StoreSales.API.Entities;
-using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace StoreSales.API.Models
 {
-    public class OrderDto
+    public class OrderCreateDto
     {
-        [JsonIgnore]
-        public int Id { get; set; }
-
+        [Required]
         public int TransactionId { get; set; }
 
-        [JsonIgnore]
+        [Required]
         public int ItemId { get; set; }
-        public Item Item { get; set; }
 
-
+        [Required]
         public int Quantity { get; set; }
     }
 }

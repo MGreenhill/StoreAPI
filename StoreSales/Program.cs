@@ -22,6 +22,7 @@ builder.Services.AddDbContext<StoreSalesContext>(
         builder.Configuration["ConnectionStrings:StoreSalesDBConnectionString"]));
 
 builder.Services.AddScoped<StoreRepositoryManager>();
+builder.Services.AddScoped<StoreFunctionsService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
