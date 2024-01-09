@@ -9,6 +9,7 @@ namespace StoreSales.API.Profiles
             CreateMap<Entities.Transaction, Models.TransactionWithOrdersDto>();
             CreateMap<Entities.Transaction, Models.TransactionDto>();
             CreateMap<Models.TransactionCreateDto, Entities.Transaction>();
+            CreateMap<Models.TransactionUpdateDto, Entities.Transaction>();
         }
     }
 }

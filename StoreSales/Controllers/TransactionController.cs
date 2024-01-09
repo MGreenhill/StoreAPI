@@ -70,7 +70,7 @@ namespace StoreSales.API.Controllers
         /// <param name="transactionPost">JsonArray of TransactionCreate Dto plus array of OrderCreateDtos</param>
         /// <returns>Json of created Transaction and associated list of Orders</returns>
         /// <response code = "204">Successfully created transaction</response>
-        /// <response code = "400">Could not created transaction.</response>
+        /// <response code = "400">Could not create transaction.</response>
         [HttpPost]
         public async Task<ActionResult> CreateTransaction([FromBody] TransactionPostDto transactionPost)
         {
@@ -119,6 +119,111 @@ namespace StoreSales.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Update an existing transaction and orders associated with it.
+        /// </summary>
+        /// <param name="id">Identifying key of the transaction</param>
+        /// <param name="transactionPut">A JsonArray containing a TransactionUpdateDto and OrderPutDto</param>
+        /// <returns>No Content actionresult</returns>
+        /// <response code = "204">Successfully updated transaction and orders.</response>
+        /// <response code = "400">Could not update transaction and orders.</response>
+        /// <response code = "404">Transaction could not be found.</response>
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateTransaction(int id, [FromBody] TransactionPutDto transactionPut)
+        {
+            //Split Dto by entities
+            TransactionUpdateDto updatedTransactionDto = transactionPut.Transaction;
+            List<OrderPutDto>? updatedOrdersDtos = transactionPut.Orders;
 
+            //Get current transaction and all orders
+            var oldTransaction = _storeRepositoryManager.transactionRepo.GetById(id);
+            var oldOrdersEnumberable = await _storeRepositoryManager.orderRepo.GetAll();
+
+            //Establish order lists for sorting
+            List<Order> oldOrders = oldOrdersEnumberable.Where(o => o.TransactionId == id).ToList();
+            List<OrderPutDto> ordersToAdd;
+            List<Order> ordersToRemove;
+
+            //Check if transaction exists
+            if (updatedTransactionDto == null)
+            {
+                return NotFound();
+            }
+
+            //Check if each new order has the correct TransactionId and updating orders have the correct transactionId
+            foreach (OrderPutDto order in updatedOrdersDtos)
+            {
+                if (order.TransactionId != updatedTransactionDto.Id)
+                {
+                    return BadRequest("One or more Orders has a bad Transaction Id");
+                }
+                if(order.Id != 0 && order.TransactionId != oldOrders.FirstOrDefault(o => o.Id == order.Id).TransactionId)
+                {
+                    return BadRequest("One or more exsiting order matches ");
+                }
+            }
+
+            //Sort updated Orders into 3 lists (add, remove, update)
+            List<OrderPutDto> ordersToUpdate = _storeFunctionsService.CompareOrders(updatedOrdersDtos, oldOrders, out ordersToRemove, out ordersToAdd);
+
+            //Edit inventory by quantity of orders into the 3 order lists
+            _storeFunctionsService.EditInventory(ordersToAdd.Select(o => o.ItemId).ToList().Zip(ordersToAdd.Select(o => o.Quantity).ToList()));
+            _storeFunctionsService.EditInventory(ordersToRemove.Select(o => o.ItemId).ToList().Zip(ordersToRemove.Select(o => -o.Quantity).ToList()));
+            _storeFunctionsService.EditInventory(
+                ordersToUpdate.Select(o => o.ItemId).ToList().Zip(ordersToUpdate.Select(
+                    a => a.Quantity - oldOrders.FirstOrDefault(b => b.Id == a.Id).Quantity).ToList()));
+
+            //Adjust orders in database
+            foreach (var order in ordersToAdd)
+            {
+                await _storeRepositoryManager.orderRepo.Add(_mapper.Map<Order>(order));
+            }
+            foreach (var order in ordersToRemove)
+            {
+                await _storeRepositoryManager.orderRepo.Delete(order.Id);
+            }
+            foreach (var order in ordersToUpdate)
+            {
+                await _storeRepositoryManager.orderRepo.Update(_mapper.Map<Order>(order));
+            }
+
+            //Map UpdatedTransaction and update database
+            Transaction updatedTransaction = _mapper.Map<Transaction>(updatedTransactionDto);
+            await _storeRepositoryManager.transactionRepo.Update(updatedTransaction);
+            await _storeRepositoryManager.SaveRepos();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Remove Transaction and all associated Orders from database
+        /// </summary>
+        /// <param name="id">Identifying key of the transaction</param>
+        /// <returns>ActionResult NoContent</returns>
+        /// <response code="204">Transactions and orders have been successfully removed</response>
+        /// <response code="404">Transaction Id couldn't be found</response>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteTransaction(int id)
+        {
+            //Check if Transaction exists
+            var transaction = await _storeRepositoryManager.transactionRepo.GetById(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            //Remove orders with transactionId
+            var allOrders = await _storeRepositoryManager.orderRepo.GetAll();
+            var transactionOrders = allOrders.Where(o => o.TransactionId == transaction.Id);
+            foreach (var order in transactionOrders)
+            {
+                await _storeRepositoryManager.orderRepo.Delete(order.Id);
+            }
+
+            //Remove transaction
+            await _storeRepositoryManager.transactionRepo.Delete(id);
+
+            return NoContent();
+        }
     }
 }

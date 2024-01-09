@@ -8,6 +8,8 @@ namespace StoreSales.API.Profiles
         {
             CreateMap<Entities.Order, Models.OrderDto>();
             CreateMap<Models.OrderCreateDto, Entities.Order>();
+            CreateMap<Models.OrderUpdateDto, Entities.Order>();
+            CreateMap<Models.OrderPutDto, Entities.Order>();
         }
     }
 }

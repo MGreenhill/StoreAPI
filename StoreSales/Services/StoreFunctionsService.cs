@@ -20,7 +20,7 @@ namespace StoreSales.API.Services
         /// Subtracts a specified quantities from items in the inventory database.
         /// </summary>
         /// <param name="invChanges">List of Item and Quantity pairs to adjust in database</param>
-        public async void EditInventory(List<(int itemId, int quantityChange)> invChanges)
+        public async void EditInventory(IEnumerable<(int itemId, int quantityChange)> invChanges)
         {
             var inventory = await _storeRepositoryManager.inventoryRepo.GetAll();
 
@@ -47,10 +47,12 @@ namespace StoreSales.API.Services
             }
         }
 
-        public List<Order> CompareOrders(List<Order> newOrders, List<Order> oldOrders, out List<Order> removeOrders, out List<Order> AddOrders) {
-            removeOrders = new List<Order>();
-            AddOrders = new List<Order>();
-            return new List<Order>();
+        public List<OrderPutDto> CompareOrders(List<OrderPutDto> newOrders, List<Order> oldOrders, out List<Order> ordersToRemove, out List<OrderPutDto> ordersToAdd)
+        {
+            ordersToAdd = newOrders.Where(o => !oldOrders.Any(o2 => o2.Id == o.Id)).ToList();
+            ordersToRemove = oldOrders.Where(o => !newOrders.Any(o2 => o2.Id == o.Id)).ToList();
+            return newOrders.Where(o => oldOrders.Any(o2 => o2.Id == o.Id)).ToList();
+
         }
     }
 }
