@@ -12,7 +12,7 @@ namespace StoreSales.API.Models
 
         [JsonIgnore]
         public int ItemId { get; set; }
-        public Item Item { get; set; }
+        public ItemDto Item { get; set; }
 
 
         public int Quantity { get; set; }
